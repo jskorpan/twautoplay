@@ -152,6 +152,7 @@ player = new YT.Player('player', {
 $(document).keydown(function(e){
     if (e.keyCode == 32) 
     { 
+        clearTimeout(ttId);
         player.stopVideo();
 		stopClip();
 		onPlayerReady();        
