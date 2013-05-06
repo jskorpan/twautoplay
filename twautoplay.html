@@ -41,7 +41,7 @@ THE SOFTWARE.
 <script language="javascript">
 /*
 Configuration goes here */
-var maxLength = 120; // Maximum length in seconds of a clip to play
+var maxLength = 60; // Maximum length in seconds of a clip to play
 var twitterTag = "youtube"; // Twitter tag/query
 
 var alreadyPlayed = {};
@@ -166,6 +166,11 @@ function onPlayerReady(event) {
    					var endOffset =  vid.indexOf('?');
                     if (endOffset != -1)
                         vid  = vid.substring(0, endOffset);
+                        
+   					endOffset =  vid.indexOf('&');
+                    if (endOffset != -1)
+                        vid  = vid.substring(0, endOffset);
+                        
 
 					var suggested = te["from_user"];
 
