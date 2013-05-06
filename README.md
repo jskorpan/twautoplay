@@ -1,4 +1,3 @@
 twautoplay
-==========
-
-Twitter fed YouTube player running, ideal for all kinds of parties. Including LAN parties!
+===========
+Automatic Twitter fed YouTube player, ideal for all kinds of parties. Including LAN parties!
