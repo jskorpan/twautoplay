@@ -32,6 +32,7 @@ THE SOFTWARE.
 <div align="center">
 <div id="settings" style="display: node">
 <h1>twautoplay</h1>
+<p style="font-size: 50%;">Powered by github.com/jskorpan/twautoplay</a></p>
 <p>Play YouTube links from Twitter</p>
 <form action="" method="get">
 <table border=0>
@@ -147,8 +148,7 @@ function onPlayerReady(event) {
 				{
 					rawUrl = urls[i2]["expanded_url"];
                     
-                    console.log("rawUrl: " + rawUrl);
-                    
+                   
 					var prefix = "youtu.be/";
 											
 					var offset = rawUrl.indexOf(prefix);
@@ -176,11 +176,8 @@ function onPlayerReady(event) {
                     if (endOffset != -1)
                         vid  = vid.substring(0, endOffset);
                         
-
 					var suggested = te["from_user"];
-
-                    console.log("VIDEO: " + vid);
-                    
+                   
 					var now = new Date().getTime();
 			
 					if ((vid in alreadyPlayed) && now < alreadyPlayed[vid])
