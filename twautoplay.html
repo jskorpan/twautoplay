@@ -30,6 +30,19 @@ THE SOFTWARE.
 </head>
 <body style="font-family: georgia; font-size:200%; background-color:black; color:white ">
 <div align="center">
+<div id="settings" style="display: node">
+<h1>twautoplay</h1>
+<p>Play YouTube links from Twitter</p>
+<form action="" method="get">
+<table border=0>
+<tr><td>Twitter query:</td><td><input id="taginput" type="text" name="tag" maxlength="64" size="30" value="@YouTube"></td></tr>
+<tr><td>Maximum clip length (seconds):</td><td><input type="text" name="len" maxlength="5" size="5" value="90"></td></tr>
+<tr><td>Language:</td><td><input type="text" name="lang" maxlength="2" size="2" value="en"></td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Next"></td></tr>
+</table>
+</form>
+</div>
+<div id="main" style="display: none">
 <p style="font-family: courier">Tweet <b><span id="twitterTag"></span></b> and your video as <b>youtu.be/yourVideoId</b> to participate.</p>
 <div id="player"></div>
 <div id="clipInfo">
@@ -39,7 +52,7 @@ THE SOFTWARE.
 <i><p id="tweet"></p></i>
 </div>
 </div>
-
+</div>
 <script language="javascript">
 
 function getParameterByName(name)
@@ -53,49 +66,6 @@ function getParameterByName(name)
   else
     return decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-
-/*
-Default configuration goes here */
-var maxLength = 30; // Maximum length in seconds of a clip to play
-var twitterTag = "youtube"; // Twitter tag/query
-var twitterLang = "en"; // Language given by an ISO 639-1 code.
-
-var argMaxLength = getParameterByName("len")
-var argTag = getParameterByName("tag")
-var argLang = getParameterByName("lang")
-
-if (argTag == null)
-{
-    alert(
-    "Usage:\n" +
-    "Open twautoplay.html from disk (file://) in Chrome\n\n" + 
-    "Query arguments:\n" + 
-    "twautoplay.html?\n" + 
-    "  len=<Max length of clip to play in seconds>\n"  + 
-    "  tag=<Twitter tag to fetch from, use %23 for #>\n"  + 
-    "  lang=<Language as ISO 639-1 code>\n");
-}
-
-
-if (argMaxLength != null)
-    maxLength = parseInt(argMaxLength, 10);
-
-if (argTag != null)
-    twitterTag = argTag;
-
-if (argLang != null)
-    twitterLang = argLang;
-    
-var alreadyPlayed = {};
-var alreadyQueued = {};
-var player;
-var countDown = 10;
-var ttId = -1;
-
-var twitterQuery = twitterTag.replace("#", "%23");
-
-document.getElementById("counter").innerHTML = countDown;
-document.getElementById("twitterTag").innerHTML = twitterTag;
 
 function startClip()
 {
@@ -128,15 +98,6 @@ function timerFunction()
 	setTimeout("timerFunction()", 1000);
 }
 
-// 2. This code loads the IFrame Player API code asynchronously.
-var tag = document.createElement('script');
-
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-// 3. This function creates an <iframe> (and YouTube player)
-//    after the API code downloads.
 
 function onYouTubeIframeAPIReady() {
 player = new YT.Player('player', {
@@ -150,18 +111,6 @@ player = new YT.Player('player', {
   }
 });
 }
-
-$(document).keydown(function(e){
-    if (e.keyCode == 32) 
-    { 
-        clearTimeout(ttId);
-        player.stopVideo();
-		stopClip();
-		onPlayerReady();        
-        return false;
-    }
-});
-
 
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
@@ -258,14 +207,6 @@ function onPlayerReady(event) {
 	});
 }
 
-
-
-
-
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
-var done = false;
 function onPlayerStateChange(event) {
 
 	if (event.data == YT.PlayerState.ENDED)
@@ -281,6 +222,95 @@ function onPlayerStateChange(event) {
 	}
 }
 
-</script>
+var maxLength = 30; // Maximum length in seconds of a clip to play
+var twitterTag = "youtube"; // Twitter tag/query
+var twitterLang = "en"; // Language given by an ISO 639-1 code.
 
+var argMaxLength = getParameterByName("len")
+var argTag = getParameterByName("tag")
+var argLang = getParameterByName("lang")
+var alreadyPlayed = {};
+var alreadyQueued = {};
+var player;
+var countDown = 10;
+var ttId = -1;
+var twitterQuery;
+
+function begin()
+{
+	$('#main').show();
+
+	if (argMaxLength != null)
+		maxLength = parseInt(argMaxLength, 10);
+
+	if (argTag != null)
+		twitterTag = argTag;
+
+	if (argLang != null)
+		twitterLang = argLang;
+
+	twitterQuery = twitterTag;//.replace("#", "%23");
+
+	while (twitterQuery.replace("#", "%23") != twitterQuery)
+		twitterQuery = twitterQuery.replace("#", "%23");
+
+	while (twitterQuery.replace("#", "%23") != twitterQuery)
+		twitterQuery = twitterQuery.replace("#", "%23");
+	
+	
+	document.getElementById("counter").innerHTML = countDown;
+	document.getElementById("twitterTag").innerHTML = twitterTag;
+
+	// 2. This code loads the IFrame Player API code asynchronously.
+	var tag = document.createElement('script');
+
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	// 3. This function creates an <iframe> (and YouTube player)
+	//    after the API code downloads.
+
+	$(document).keydown(function(e){
+		if (e.keyCode == 32) 
+		{ 
+			clearTimeout(ttId);
+			player.stopVideo();
+			stopClip();
+			onPlayerReady();        
+			return false;
+		}
+	});
+}
+
+if (argTag == null)
+{
+	$('#settings').show();
+	$('#main').hide();
+	$("input:text:visible:first").focus();
+	$(function() {
+		var input = $('#taginput');
+
+		input.focus(function() {
+			 $(this).val('');
+		}).blur(function() {
+			 var el = $(this);
+
+			 /* use the elements title attribute to store the 
+				default text - or the new HTML5 standard of using
+				the 'data-' prefix i.e.: data-default="some default" */
+			 if(el.val() == '')
+				 el.val(el.attr('title'));
+		});
+	 });	
+	
+}
+else
+{
+	$('#settings').hide();
+	$('#main').show();
+	begin();
+}
+
+</script>
 </body>
